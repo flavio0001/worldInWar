@@ -1,0 +1,6 @@
+.idea 
+WW/venv 
+# Ignorar arquivos de áudio
+WW/assets/sounds/*.ogg
+WW/assets/sounds/*.mp3
+WW/assets/sounds/*.wav
