@@ -1,4 +1,5 @@
 import wx
+import subprocess
 from sound_manager import SoundManager
 class GameFrame(wx.Frame):
     def __init__(self):
@@ -114,6 +115,9 @@ class GameFrame(wx.Frame):
         self.sound_manager.play_music("m1.ogg")
 
     def on_start_game(self, event):
+        self.Hide()
+        subprocess.run(["python", "game.py"])
+        self.show()
         print("Starting Game...")
 
     def on_create_account(self, event):
