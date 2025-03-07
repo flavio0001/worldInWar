@@ -1,5 +1,6 @@
 import pygame
 import accessible_output2.outputs.auto
+from input_manager import InputManager
 from time import sleep
 
 class Game:
@@ -12,80 +13,75 @@ class Game:
         self.clock = pygame.time.Clock()
         self.output = accessible_output2.outputs.auto.Auto()
         self.fps = 60
-        
-        # Configurações para evitar duplicação de leituras
+        self.input_manager = InputManager()
+
+        # Configuração do sistema de voz
         self.last_spoken = ""
         self.speak_delay = 0
+        
+        # Estado do jogo
+        self.state = "game"
 
     def speak(self, text):
-        """Função para falar texto evitando repetições rápidas do mesmo texto"""
         if text != self.last_spoken or self.speak_delay <= 0:
             self.output.speak(text, interrupt=True)
             self.last_spoken = text
-            self.speak_delay = 10  # Frames até permitir a repetição do mesmo texto
-    
+            self.speak_delay = 10
+
     def show_exit_menu(self):
         self.speak("Deseja sair?")
-        sleep(0.5)  # Pequena pausa para melhor compreensão
-        
-        menu_running = True
-        options = ["Sim", "Não"]
-        selected_index = 1
-        
-        # Anúncio inicial da opção selecionada
-        self.speak(f"{options[selected_index]}")
-        
-        while menu_running:
-            # Diminui o contador de delay de fala, se houver
-            if self.speak_delay > 0:
-                self.speak_delay -= 1
-                
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-                    return
+        sleep(0.5)
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                        # Alternar entre as opções apenas com setas para cima/baixo
-                        selected_index = 1 - selected_index
-                        self.speak(f"{options[selected_index]}")
-                        
-                    elif event.key == pygame.K_RETURN:
-                        if selected_index == 0:  # Sim
-                            self.speak("Saindo do jogo")
-                            sleep(0.5)  # Dar tempo para o leitor de tela terminar
-                            self.running = False
-                            return
-                        else:  # Não
-                            self.speak("Retornando ao jogo")
-                            menu_running = False
-                            
-                    elif event.key == pygame.K_ESCAPE:
-                        # Sair do menu com ESC
-                        self.speak("Retornando ao jogo")
-                        menu_running = False
-                        
-            # Atualiza a tela e mantém o frame rate
-            pygame.display.flip()
-            self.clock.tick(self.fps)
+        self.state = "exit_menu"
+        self.exit_options = ["Sim", "Não"]
+        self.selected_index = 1
+
 
     def run(self):
         self.speak("Jogo iniciado. Pressione ESC para o menu de saída.")
-        
+
         while self.running:
-            for event in pygame.event.get():
+            # Coletar eventos
+            eventos = pygame.event.get()
+            
+            # Processar eventos de fechamento da janela
+            for event in eventos:
                 if event.type == pygame.QUIT:
                     self.running = False
-
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        self.show_exit_menu()
-                    # Aqui você adicionará outras teclas e funcionalidades do jogo
-
-            # Aqui você irá atualizar a lógica do jogo, como movimento do jogador, etc.
             
-            # Atualiza a tela e mantém o frame rate
+            # Atualizar o gerenciador de entrada
+            self.input_manager.atualizar(eventos)
+            
+            # Atualizar contador de delay da fala
+            if self.speak_delay > 0:
+                self.speak_delay -= 1
+            
+            # Gerenciar estados do jogo
+            if self.state == "game":
+                # Processamento do jogo principal
+                if self.input_manager.tecla_ativada("menu_sair"):
+                    self.show_exit_menu()
+                    
+            elif self.state == "exit_menu":
+                # Processamento do menu de saída
+                if self.input_manager.tecla_ativada("menu_cima") or self.input_manager.tecla_ativada("menu_baixo"):
+                    self.selected_index = 1 - self.selected_index
+                    self.speak(f"{self.exit_options[self.selected_index]}")
+
+                elif self.input_manager.tecla_ativada("menu_selecionar"):
+                    if self.selected_index == 0:
+                        self.speak("Saindo do jogo")
+                        sleep(0.5)
+                        self.running = False
+                    else:
+                        self.speak("Retornando ao jogo")
+                        self.state = "game"
+
+                elif self.input_manager.tecla_ativada("menu_sair"):
+                    self.speak("Retornando ao jogo")
+                    self.state = "game"
+
+            # Renderização
             pygame.display.flip()
             self.clock.tick(self.fps)
 
