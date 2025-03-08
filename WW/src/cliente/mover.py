@@ -36,9 +36,13 @@ class Mover:
             self.x += deslocamento
             self.y -= deslocamento
         elif direcao == "subir":
-            self.z += deslocamento  # Usado para voar ou subir escadas
+            self.z += deslocamento
         elif direcao == "descer":
-            self.z -= deslocamento  # Usado para voar ou descer
+            self.z -= deslocamento
+
+        self.x = int(self.x)
+        self.y = int(self.y)
+        self.z = int(self.z)
 
         print(f"Movido para {self.x}, {self.y}, {self.z} via {tipo_movimento}")
 
@@ -50,13 +54,13 @@ class Mover:
         if tipo_movimento == "andar":
             return self.velocidade
         elif tipo_movimento == "voar":
-            return self.velocidade * 1.5  # Voar pode ser mais rápido
+            return self.velocidade * 1.5
         elif tipo_movimento == "rastejar":
-            return self.velocidade * 0.5  # Rastejar é mais lento
+            return self.velocidade * 0.5
         elif tipo_movimento == "nadar":
-            return self.velocidade * 0.8  # Nadar pode ser um meio-termo
+            return self.velocidade * 0.8
         else:
-            return self.velocidade  # Movimento padrão
+            return self.velocidade
 
 # Exemplo de uso
 if __name__ == "__main__":

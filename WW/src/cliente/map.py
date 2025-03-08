@@ -23,7 +23,10 @@ class Map:
     
     def load_map(self, filename):
         """Carrega os dados do mapa de um arquivo .mp"""
-        path = os.path.join("src", "cliente", "mapas", filename)
+        path = os.path.join(os.path.dirname(__file__), "mapas", filename)
+
+
+        #path = os.path.join("src", "cliente", "mapas", filename)
         
         if not os.path.exists(path):
             raise FileNotFoundError(f"Arquivo {path} não encontrado!")
@@ -142,6 +145,17 @@ class Map:
                 return True, escada["tipo"]
         return False, None
     
+    #def get_texto_zona(self, x, y, z):
+        """Retorna a descrição da zona em que o jogador está."""
+#        for zona in self.zonas_texto:
+            #if (zona["min_x"] <= x <= zona["max_x"] and
+                #zona["min_y"] <= y <= zona["max_y"] and
+                #zona["min_z"] <= z <= zona["max_z"]):
+                #return zona["texto"]
+        
+        #return self.max_text  # Texto padrão se não houver zona específica
+    
+
     def get_texto_zona(self, x, y, z):
         """Retorna a descrição da zona em que o jogador está."""
         for zona in self.zonas_texto:
@@ -149,9 +163,10 @@ class Map:
                 zona["min_y"] <= y <= zona["max_y"] and
                 zona["min_z"] <= z <= zona["max_z"]):
                 return zona["texto"]
-        
-        return self.max_text  # Texto padrão se não houver zona específica
-    
+
+            return "Fora de uma zona definida"
+
+
     def obter_tipo_de_piso(self, x, y):
         """Verifica o tipo de piso na posição do jogador."""
         for plataforma in self.plataformas:

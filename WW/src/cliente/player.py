@@ -61,6 +61,16 @@ class Player(Mover):
         """Exibe o status atual do jogador."""
         return f"{self.nome} | Vida: {self.vida} | Energia: {self.energia} | Posição: ({self.x}, {self.y}, {self.z})"
 
+    def falar_coordenadas(self):
+        return f"Posição: {self.x}, {self.y}, {self.z}"
+
+    def falar_zona(self, mapa=None):
+        if mapa:
+            return mapa.get_texto_zona(self.x, self.y, self.z)
+        return "Zona desconhecida"
+        #return mapa.get_texto_zona(self.x, self.y, self.z)
+
+
 # Testando a classe
 if __name__ == "__main__":
     jogador1 = Player("Guerreiro", 0, 0, 0)
