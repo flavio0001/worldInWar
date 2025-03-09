@@ -71,17 +71,14 @@ class Player(Mover):
         #return mapa.get_texto_zona(self.x, self.y, self.z)
 
 
-# Testando a classe
-if __name__ == "__main__":
-    jogador1 = Player("Guerreiro", 0, 0, 0)
-    jogador2 = Player("Mago", 10, 5, 0)
+def tocar_som_passo(jogador):
+    """Toca o som do passo do jogador baseado no tipo de piso."""
+    if hasattr(jogador, "mapa") and hasattr(jogador, "sound_map"):
+        tipo_piso = jogador.mapa.obter_tipo_de_piso(jogador.x, jogador.y)
 
-    print(jogador1.status())
-    jogador1.mover("norte")
-    jogador1.mover("leste", "correr")
-    jogador1.interagir("Baú Antigo")
-    print(jogador1.status())
-
-    print(jogador2.status())
-    Player.remove_player("Mago")
-    print(Player.players)  # Verifica lista após remoção
+        if tipo_piso:
+            jogador.sound_map.play_step_sound(tipo_piso)
+        else:
+            print("⚠️ Nenhum piso detectado para tocar som.")
+    else:
+        print("⚠️ O jogador não tem um mapa ou sistema de som associado.")

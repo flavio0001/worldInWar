@@ -3,7 +3,8 @@ import accessible_output2.outputs.auto
 from input_manager import InputManager
 from time import sleep
 from player import Player  
-from map import Map  
+from map import Map
+from sound_map import SoundMap
 
 class Game:
     def __init__(self):
@@ -18,6 +19,8 @@ class Game:
         self.input_manager = InputManager()
         self.player = Player("Jogador1")
         self.mapa = Map("brasilândia.mp")
+        self.player.sound_map = SoundMap()
+
         print(f"Nome do mapa: {self.mapa.name}")
         print(f"Tamanho: X={self.mapa.max_x}, Y={self.mapa.max_y}, Z={self.mapa.max_z}")
         print(f"Zonas de texto: {self.mapa.zonas_texto}")
