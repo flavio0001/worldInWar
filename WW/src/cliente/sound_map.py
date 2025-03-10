@@ -6,7 +6,7 @@ class SoundMap:
     def __init__(self):
         pygame.mixer.init()  # Inicia o mixer do pygame
 
-        self.sounds_folder = r"D:\program\área de testes\worldInWar\WW\src\cliente\assets\sounds\pisos"
+        self.sounds_folder = os.path.join("assets", "sounds", "pisos")
         self.sounds = {}
 
         self.load_sounds()
@@ -25,6 +25,11 @@ class SoundMap:
                     if file.endswith(".ogg")
                 ]
 
+        #print("Sons carregados:", self.sounds)
+        #print(f"Piso carregado: {tipo_piso}, {len(self.sounds[tipo_piso])} sons")
+        print("Sons carregados por tipo:", self.sounds)
+
+
     def play_step_sound(self, tipo_piso):
         """Toca um som de passo baseado no tipo de piso."""
         if tipo_piso in self.sounds and self.sounds[tipo_piso]:
@@ -32,4 +37,3 @@ class SoundMap:
             pygame.mixer.Sound(sound_file).play()
         else:
             print(f"⚠️ Nenhum som encontrado para o piso: {tipo_piso}")
-

@@ -17,9 +17,10 @@ class Game:
         self.output = accessible_output2.outputs.auto.Auto()
         self.fps = 60
         self.input_manager = InputManager()
-        self.player = Player("Jogador1")
-        self.mapa = Map("brasilândia.mp")
-        self.player.sound_map = SoundMap()
+        
+        self.mapa = Map("brasilândia.mp")  
+        self.sound_map = SoundMap()  
+        self.jogador = Player("opiroca", self.mapa, self.sound_map, x=0, y=0, z=0)  
 
         print(f"Nome do mapa: {self.mapa.name}")
         print(f"Tamanho: X={self.mapa.max_x}, Y={self.mapa.max_y}, Z={self.mapa.max_z}")
@@ -27,8 +28,6 @@ class Game:
         print(f"Bordas X: {self.mapa.bordas_x}")
         print(f"Bordas Y: {self.mapa.bordas_y}")
         print(f"Plataformas: {self.mapa.plataformas}")
-
-
 
         self.last_spoken = ""
         self.speak_delay = 0
@@ -53,29 +52,29 @@ class Game:
         self.input_manager.atualizar(eventos)
 
         if self.input_manager.tecla_pressionada("cima"):
-            self.player.mover("norte")
+            self.jogador.mover("norte")
         elif self.input_manager.tecla_pressionada("baixo"):
-            self.player.mover("sul")
+            self.jogador.mover("sul")
         elif self.input_manager.tecla_pressionada("esquerda"):
-            self.player.mover("oeste")
+            self.jogador.mover("oeste")
         elif self.input_manager.tecla_pressionada("direita"):
-            self.player.mover("leste")
+            self.jogador.mover("leste")
 
         if self.input_manager.tecla_ativada("girar_esquerda"):
-            self.player.mover("oeste")
+            self.jogador.mover("oeste")
         elif self.input_manager.tecla_ativada("girar_direita"):
-            self.player.mover("leste")
+            self.jogador.mover("leste")
 
         if self.input_manager.tecla_combinada_ativada("virar180_frente"):
-            self.player.mover("180")
+            self.jogador.mover("180")
         elif self.input_manager.tecla_combinada_ativada("virar180_tras"):
-            self.player.mover("180")
+            self.jogador.mover("180")
 
         if self.input_manager.tecla_ativada("falar_coordenadas"):
-            self.speak(self.player.falar_coordenadas())
+            self.speak(self.jogador.falar_coordenadas())
 
         if self.input_manager.tecla_ativada("falar_zona"):
-            self.speak(self.player.falar_zona(self.mapa))
+            self.speak(self.jogador.falar_zona(self.mapa))
 
     def run(self):
         self.speak("Jogo iniciado. Pressione ESC para o menu de saída.")

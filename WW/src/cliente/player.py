@@ -5,12 +5,14 @@ class Player(Mover):
     
     players = []  # Lista global de jogadores
 
-    def __init__(self, nome, x=0, y=0, z=0, velocidade=1.0):
+    def __init__(self, nome, mapa, sound_map, x=0, y=0, z=0, velocidade=1.0):
         """Inicializa um jogador com nome, posição e status."""
         super().__init__(x, y, z, velocidade)
         self.nome = nome
         self.vida = 100
         self.energia = 100
+        self.mapa = mapa
+        self.sound_map = sound_map
         self.id = len(Player.players)  # ID único do jogador
         Player.players.append(self)  # Adiciona à lista global
 
@@ -53,6 +55,8 @@ class Player(Mover):
 
         print(f"Nova posição de {self.nome}: ({self.x}, {self.y}, {self.z}) | Energia: {self.energia}")
 
+        self.tocar_som_passo()  # Chama a função de som aqui
+
     def interagir(self, objeto):
         """Simula interação com objetos do jogo."""
         print(f"{self.nome} interagiu com {objeto}!")
@@ -68,17 +72,14 @@ class Player(Mover):
         if mapa:
             return mapa.get_texto_zona(self.x, self.y, self.z)
         return "Zona desconhecida"
-        #return mapa.get_texto_zona(self.x, self.y, self.z)
 
-
-def tocar_som_passo(jogador):
-    """Toca o som do passo do jogador baseado no tipo de piso."""
-    if hasattr(jogador, "mapa") and hasattr(jogador, "sound_map"):
-        tipo_piso = jogador.mapa.obter_tipo_de_piso(jogador.x, jogador.y)
-
-        if tipo_piso:
-            jogador.sound_map.play_step_sound(tipo_piso)
+    def tocar_som_passo(self):
+        """Toca o som do piso correto quando o jogador anda."""
+        if self.mapa and self.sound_map:
+            tipo_piso = self.mapa.obter_tipo_de_piso(self.x, self.y)
+            if tipo_piso:
+                self.sound_map.play_step_sound(tipo_piso)
+            else:
+                print("⚠️ Nenhum piso detectado para tocar som.")
         else:
-            print("⚠️ Nenhum piso detectado para tocar som.")
-    else:
-        print("⚠️ O jogador não tem um mapa ou sistema de som associado.")
+            print("⚠️ O jogador não tem um mapa ou sistema de som associado.")
